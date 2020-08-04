@@ -19,9 +19,9 @@ cache:
 
 before_script:
   # - apk --no-cache add jq terraform
-  - yum install -y jq unzip wget
+  - yum install -y jq unzip wget ; cd /usr/local/bin
   - wget https://releases.hashicorp.com/terraform/0.13.0-beta3/terraform_0.13.0-beta3_linux_amd64.zip
-  - unzip terraform_0.13.0-beta3_linux_amd64.zip –d /usr/local/bin
+  - unzip terraform_0.13.0-beta3_linux_amd64.zip
   - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
   - cd ${TF_ROOT}
   - terraform --version
