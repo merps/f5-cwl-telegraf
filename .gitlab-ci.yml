@@ -1,5 +1,6 @@
 image:
-  name: hashicorp/terraform:light
+#  name: hashicorp/terraform:light
+  name: amazon/aws-cli:latest
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -17,7 +18,7 @@ cache:
     - .terraform
 
 before_script:
-  - apk --no-cache add jq
+  - apk --no-cache add jq terraform
   - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
   - cd ${TF_ROOT}
   - terraform --version
