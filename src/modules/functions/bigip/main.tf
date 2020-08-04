@@ -30,10 +30,11 @@ module "bigip" {
     var.random.hex
   )
   aws_secretmanager_secret_id = aws_secretsmanager_secret.bigip.id
-  f5_ami_search_name          = "F5 Networks BIGIP-14.0.1-0.0.14 PAYG - Per App VE - LTM 25Mbps*"
+  f5_ami_search_name          = "F5 BIGIP-15.1.0.2-0.0.9 PAYG-Best 25Mbps*"
   f5_instance_count           = length(var.azs)
   ec2_key_name                = var.keyname
   ec2_instance_type           = "c4.xlarge"
+  AS3_URL                     = "https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.21.0/f5-appsvcs-3.21.0-4.noarch.rpm"
   DO_URL                      = "https://github.com/F5Networks/f5-declarative-onboarding/releases/download/v1.9.0/f5-declarative-onboarding-1.9.0-1.noarch.rpm"
 
   mgmt_subnet_security_group_ids = [
@@ -107,11 +108,9 @@ module "bigip_mgmt_sg" {
 #
 # Provision the DO hopefully...
 #
-/*
-module "bigip_do" {
-  source = "../do-base"
-  bigip_mgmt_admin = "admin"
-  bigip_mgmt_passwd = aws_secretsmanager_secret_version.bigip-pwd.secret_string
-  bigip_mgmt_public_ip = element(module.bigip.mgmt_public_ips, count.index)
+module "bigip_do_base" {
+  source = "./do-base"
+  bigip_mgmt_public_ip = module.bigip.mgmt_public_dns[0]
+  bigip_mgmt_admin     = "admin"
+  bigip_mgmt_passwd    = random_password.password.result
 }
-*/

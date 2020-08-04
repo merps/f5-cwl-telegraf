@@ -14,7 +14,7 @@
                 "f5.com"
             ]
         },
-        "hostname": ,
+        "hostname": "my.fqdn.loca",
         "myNtp": {
             "class": "NTP",
             "servers": [
