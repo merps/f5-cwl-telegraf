@@ -20,7 +20,7 @@ output "mgmt_public_dns" {
   value = module.bigip.mgmt_public_dns
 }
 
-output "private_addresses" {
+output "bigip_private_addresses" {
   value = module.bigip.private_addresses
 }
 
@@ -40,3 +40,7 @@ output "ec2_key_name" {
   value       = var.ec2_key_name
 }
 
+output "docker-host" {
+  description = "EC2 Docker Host PrivateIP's"
+  value = module.docker.docker_private_ip
+}

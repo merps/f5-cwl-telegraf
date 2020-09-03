@@ -2,7 +2,7 @@
 # Set minimum Terraform version and Terraform Cloud backend
 #
 terraform {
-  required_version = ">= 0.12"
+  # required_version = ">= 0.12"
 }
 /*
 # Create a random id
@@ -54,41 +54,18 @@ module "jumphost" {
   random         = random_id.id
   keyname        = var.ec2_key_name
 }
-
-# TODO break time but must extract string var and pass
-/*
-module "bigip_do_base" {
-  source = "../modules/functions/do-base"
-
-  bigip_mgmt_public_ip = module.bigip.mgmt_public_dns[0]
-  bigip_mgmt_admin = "admin"
-  bigip_mgmt_passwd = module.bigip.bigip_password
-
-}
-*/
-# TODO need to update the json template so this common is out at the moment
-/*
-module "bigip_as3_common" {
-  source = "./as3-common"
-
-  bigip_mgmt_public_ip = module.bigip.mgmt_addresses[0]
-  bigip_mgmt_admin = "admin"
-  bigip_mgmt_passwd = aws_secretsmanager_secret_version.bigip-pwd.secret_string
-
-}
-*/
-
 /*
 # Create docker host as per requirements/hack
 */
 module "docker" {
   source = "../modules/functions/docker"
 
-  prefix         = "${var.project}-${var.environment}"
-  azs            = var.azs
-  vpcid          = module.vpc.vpc_id
-  random         = random_id.id
-  keyname        = var.ec2_key_name
-  cidr = var.cidr
+  prefix          = "${var.project}-${var.environment}"
+  azs             = var.azs
+  vpcid           = module.vpc.vpc_id
+  random          = random_id.id
+  keyname         = var.ec2_key_name
+  cidr            = var.cidr
   private_subnets = module.vpc.private_subnets
 }
+

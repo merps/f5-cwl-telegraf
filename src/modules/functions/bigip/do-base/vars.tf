@@ -1,11 +1,19 @@
-variable "bigip_mgmt_public_ip" {
-  description = "public ip's"
+variable "public_nic_ids" {
+  description = "BIG-IP Public NicID's"
 }
 
-variable "bigip_mgmt_admin" {
-  description = "admin"
+variable "bigip_private_addr" {
+  description = "BIG-IP Private Addresses"
 }
 
-variable "bigip_mgmt_passwd" {
-  description = "admin"
+variable "azs" {
+  description = "AWS Availabilty Zones"
+}
+
+variable "random" {
+  description = "Random ID generated for tagging"
+}
+
+variable "prefix" {
+  description = "Combined naming prefix"
 }

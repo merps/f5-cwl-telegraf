@@ -106,11 +106,40 @@ module "bigip_mgmt_sg" {
   egress_rules       = ["all-all"]
 }
 #
-# Provision the DO hopefully...
+# TODO is there a cleaner way tp do provider local
 #
+/*
+provider "bigip" {
+  address  = module.bigip.mgmt_public_ips[0]
+  username = "admin"
+  password = aws_secretsmanager_secret_version.bigip-pwd.secret_string
+  alias  = "tf"
+}
+
 module "bigip_do_base" {
   source = "./do-base"
-  bigip_mgmt_public_ip = module.bigip.mgmt_public_dns[0]
-  bigip_mgmt_admin     = "admin"
-  bigip_mgmt_passwd    = random_password.password.result
+    providers = {
+    bigip = bigip.tf
+  }
+  depends_on = [module.bigip]
+
+  public_nic_ids       = module.bigip.public_nic_ids
+  bigip_private_addr   = module.bigip.private_addresses
+  random               = var.random
+  azs                  = var.azs
+  prefix               = var.prefix
 }
+*/
+#
+# TODO need to update the json template so this common is out at the moment
+#
+/*
+module "bigip_as3_common" {
+  source = "../modules/functions/bigip/as3-common"
+
+  bigip_mgmt_admin = "admin"
+  bigip_mgmt_passwd = module.bigip.bigip_password
+  bigip_mgmt_public_ip = module.bigip.mgmt_public_ips[0]
+
+}
+*/
