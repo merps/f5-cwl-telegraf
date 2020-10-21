@@ -12,6 +12,7 @@ output "public_nic_ids" {
 output "bigip_mgmt_public_ips" {
   value = module.bigip.mgmt_public_ips
 }
+
 output "bigip_mgmt_port" {
   value = module.bigip.bigip_mgmt_port
 }
