@@ -44,7 +44,7 @@ module "bigip" {
 # Create Jump host as per requirements
 */
 module "jumphost" {
-  source = "../modules/appStack/jumphost"
+  source = "../modules/secZone/jumphost"
 
   prefix         = "${var.project}-${var.environment}"
   azs            = var.azs

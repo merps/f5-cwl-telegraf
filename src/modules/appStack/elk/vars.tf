@@ -4,7 +4,6 @@ variable "cidr" {
 
 variable "region" {
   description = "AWS Region to deploy to"
-  default = "ap-southeast-2"
 }
 
 variable "azs" {

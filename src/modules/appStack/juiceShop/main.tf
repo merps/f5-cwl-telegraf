@@ -9,15 +9,8 @@ terraform {
 */
 data "terraform_remote_state" "infra" {
   backend = "local"
+
   config = {
     path = "../infra/terraform.tfstate"
   }
-}
-/*
-# Configure the GitLab
-*/
-module "gitlab-ce" {
-  source = "../modules/appStack/gitlab"
-  tags = "yeah"
-  vpc = data.terraform_remote_state.infra.outputs.vpc
 }

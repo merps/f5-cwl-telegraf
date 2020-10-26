@@ -9,9 +9,3 @@ terraform {
   }
   required_version = ">= 0.13"
 }
-
-provider "aws" {
-  alias   = "secops"
-  profile = var.secops-profile
-  region  = var.region
-}
