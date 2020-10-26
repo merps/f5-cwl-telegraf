@@ -14,7 +14,7 @@
             "telemetry_local_rule": {
                 "remark": "Only required when TS is a local listener",
                 "class": "iRule",
-                "iRule": "when CLIENT_ACCEPTED {\n  node 127.0.0.1 {{ ts_listener_port }}\n}"
+                "iRule": "when CLIENT_ACCEPTED {\n  node 127.0.0.1 6514\n}"
             },
             "telemetry_local": {
                 "remark": "Only required when TS is a local listener",
