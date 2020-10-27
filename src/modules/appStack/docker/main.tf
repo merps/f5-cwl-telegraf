@@ -33,7 +33,7 @@ module "dockerhost" {
   key_name               = var.keyname
   monitoring             = false
   vpc_security_group_ids = [module.dockerhost_sg.this_security_group_id]
-  subnet_ids             = var.vpc.private_subnets
+  subnet_ids             = var.tier
 
 
   user_data = templatefile("${path.module}/files/userdata.tmpl", {})

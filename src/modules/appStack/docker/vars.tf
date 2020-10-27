@@ -22,3 +22,7 @@ variable "keyname" {
 variable "vpc" {
   description = "AWS VPC"
 }
+
+variable "tier" {
+  description = "EC2 Docker Host Tier"
+}

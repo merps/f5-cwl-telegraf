@@ -6,6 +6,9 @@ terraform {
     random = {
       source = "hashicorp/random"
     }
+    docker = {
+      source = "terraform-providers/docker"
+    }
   }
   required_version = ">= 0.13"
 }

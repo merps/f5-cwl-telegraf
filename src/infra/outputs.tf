@@ -1,7 +1,7 @@
 # Network Information
 output "vpc" {
   description = "AWS VPC ID for the created VPC"
-  value       = module.vpc.vpc_id
+  value       = module.vpc
 }
 
 # Instance Information
@@ -46,12 +46,19 @@ output "jumphost_public_ip" {
   description = "Jumpbox IP Address"
   value       = module.jumphost.jumphost_public_ip
 }
+
 output "jumphost_sg_id" {
   description = "Jumpbox Security Group ID"
   value       = module.jumphost.jumphost_sg_id
 }
+# Docker hosts
+# TODO Spin over to ECS
+output "web_apps_docker_private_ip" {
+  description = "EC2 WebApps (Private) Docker Host Private IPs"
+  value = module.web_apps.docker_private_ip
+}
 
-output "docker-host" {
-  description = "EC2 Docker Host Private IPs"
-  value = module.docker.docker_private_ip
+output "mgmt_apps_docker_private_ip" {
+  description = "EC2 MGMT (Public) Docker Host Private IPs"
+  value = module.mgmt_apps.docker_private_ip
 }

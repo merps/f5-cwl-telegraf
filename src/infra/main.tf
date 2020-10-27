@@ -51,7 +51,7 @@ module "jumphost" {
 /*
 # Create docker host as per requirements/hack
 */
-module "docker" {
+module "web_apps" {
   source = "../modules/appStack/docker"
 
   prefix         = "${var.project}-${var.environment}"
@@ -60,15 +60,17 @@ module "docker" {
   vpc            = module.vpc
   random         = random_id.id
   keyname        = var.ec2_key_name
+  tier           = module.vpc.private_subnets
 }
-/*
-# Configure the GitLab
-# TODO as to pass the SG_ID as a string from the JumpHost/Bastion
-#
-module "gitlab-ce" {
-  source = "../modules/appStack/gitlab"
 
+module "mgmt_apps" {
+  source = "../modules/appStack/docker"
+
+  prefix         = "${var.project}-${var.environment}"
+  azs            = var.azs
+  env            = var.environment
   vpc            = module.vpc
-  jumphost_sg_id = module.jumphost.jumphost_sg_id
+  random         = random_id.id
+  keyname        = var.ec2_key_name
+  tier           = module.vpc.private_subnets
 }
-*/

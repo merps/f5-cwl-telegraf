@@ -13,11 +13,6 @@ data "terraform_remote_state" "infra" {
     path = "../infra/terraform.tfstate"
   }
 }
-/*
-# Configure the GitLab
-*/
-module "gitlab-ce" {
-  source = "../modules/appStack/gitlab"
-  tags = "yeah"
-  vpc = data.terraform_remote_state.infra.outputs.vpc
+module "ansible-uber-demo" {
+  source = "../modules/appStack/ansible-uber-demo"
 }

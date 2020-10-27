@@ -12,13 +12,17 @@ DEBIAN_FRONTEND=noninteractive
 echo '* libraries/restart-without-asking boolean true' | sudo debconf-set-selections
 
 # install dependencies
-sudo apt update
-sudo apt install docker.io
+sudo apt-get -y update
 sudo apt-add-repository --yes --update ppa:ansible/ansible
-sudo apt install software-properties-common ansible python-apt python-pip -y
+sudo apt-get -y install software-properties-common ansible python-apt python-pip docker.io -y
 sudo pip install -q jmespath
-sudo curl -L https://github.com/docker/compose/releases/download/1.26.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo systemctl enable docker
+sudo systemctl restart docker
+sudo usermod -a -G docker ubuntu
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
 
 ### Clean up
 rm /config/cloud/startup-script.sh 
