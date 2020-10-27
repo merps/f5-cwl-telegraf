@@ -4,6 +4,11 @@ output "vpc_id" {
   value       = module.vpc.vpc_id
 }
 
+output "vpc_cidr_block" {
+  description = "The CIDR block of the VPC"
+  value       = concat(module.vpc.*.vpc_cidr_block,[""])[0]
+}
+
 # Subnets
 output "private_subnets" {
   description = "List of IDs of private subnets"

@@ -1,7 +1,3 @@
-variable "public_subnets" {
-  description = "Public Subnets"
-}
-
 variable "env" {
   description = "Deployment Environment"
 }
@@ -26,6 +22,6 @@ variable "keyname" {
   description = "AWS KeyPair name"
 }
 
-variable "vpcid" {
-  description = "AWS VPC Id"
+variable "vpc" {
+  description = "AWS VPC"
 }

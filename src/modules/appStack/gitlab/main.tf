@@ -22,11 +22,6 @@ locals {
   gitlab_password = random_id.random_16[1].b64_url
 
 }
-resource "random_string" "this" {
-  length  = 5
-  special = false
-  upper   = false
-}
 
 resource "random_string" "auth_token" {
   length  = 64
@@ -52,25 +47,25 @@ data "template_file" "user_data" {
     user_data_gitlab_url      = "https://${var.gitlab_name}.${local.gitlab_zone_name}"
   }
 }
-/*
+
 module "gitlab_ssh_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = "ssh-from-bastion"
+  name        = "ssh-from-jumpbox"
   description = "Security group for bastion host with SSH ports open within VPC"
   vpc_id      = var.vpc.vpc_id
   version     = "3.0.1"
 
-  create = length(var.bastion_sg_id) > 0 ? true : false
+  create = length(var.jumphost_sg_id) > 0 ? true : false
 
   ingress_with_source_security_group_id = [
     {
       rule                     = "ssh-tcp"
-      source_security_group_id = var.bastion_sg_id
+      source_security_group_id = var.jumphost_sg_id
     }
   ]
 }
-*/
+
 module "all_egress_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
@@ -100,9 +95,7 @@ module "gitlab_elb_https_sg" {
       source_security_group_id = module.gitlab_ec2_http_sg.this_security_group_id
     }
   ]
-
 }
-
 
 module "gitlab_ec2_http_sg" {
   source = "terraform-aws-modules/security-group/aws"
@@ -135,7 +128,6 @@ module "gitlab_pgsql_sg" {
     }
   ]
 }
-
 
 module "gitlab_redis" {
   source    = "git::https://github.com/cloudposse/terraform-aws-elasticache-redis.git?ref=master"
@@ -180,7 +172,7 @@ module "rds_pgsql_gitlab" {
 
   backup_retention_period = 7
 
-  tags = var.tags
+  /* tags = var.tags */
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 

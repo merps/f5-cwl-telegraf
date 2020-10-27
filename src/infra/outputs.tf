@@ -4,6 +4,12 @@ output "vpc" {
   value       = module.vpc.vpc_id
 }
 
+# Instance Information
+output "ec2_key_name" {
+  description = "The key used to communication with ec2 instances"
+  value       = var.ec2_key_name
+}
+
 # BIG-IP Information
 output "public_nic_ids" {
   description = "BIG-IP Public ENI IDs"
@@ -36,15 +42,13 @@ output "bigip_password" {
 }
 
 # Jumpbox information
-output "jumphost_ip" {
+output "jumphost_public_ip" {
   description = "Jumpbox IP Address"
-  value       = module.jumphost.jumphost_ip
+  value       = module.jumphost.jumphost_public_ip
 }
-
-# Instance Information
-output "ec2_key_name" {
-  description = "The key used to communication with ec2 instances"
-  value       = var.ec2_key_name
+output "jumphost_sg_id" {
+  description = "Jumpbox Security Group ID"
+  value       = module.jumphost.jumphost_sg_id
 }
 
 output "docker-host" {

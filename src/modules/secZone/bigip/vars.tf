@@ -1,9 +1,9 @@
-variable "cidr" {
-  description = "AWS VPC CIDR Block"
+variable "vpc" {
+  description = "VPC"
 }
-
-variable "prefix" {
-  description = "Environment Tagging Prefix"
+/*
+variable "vpcid" {
+  description = "AWS VPC Id"
 }
 
 variable "public_subnets" {
@@ -18,8 +18,16 @@ variable "database_subnets" {
   description = "Database Subnets"
 }
 
+variable "cidr" {
+  description = "AWS VPC CIDR Block"
+}
+*/
 variable "azs" {
   description = "AWS Availabilty Zones"
+}
+
+variable "prefix" {
+  description = "Environment Tagging Prefix"
 }
 
 variable "env" {
@@ -32,10 +40,6 @@ variable "random" {
 
 variable "keyname" {
   description = "AWS KeyPair name"
-}
-
-variable "vpcid" {
-  description = "AWS VPC Id"
 }
 
 variable "allowed_mgmt_cidr" {

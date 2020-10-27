@@ -52,9 +52,9 @@ module "bigip" {
     module.bigip_mgmt_sg.this_security_group_id
   ]
 
-  vpc_public_subnet_ids  = var.public_subnets
-  vpc_private_subnet_ids = var.private_subnets
-  vpc_mgmt_subnet_ids    = var.database_subnets
+  vpc_public_subnet_ids  = var.vpc.public_subnets
+  vpc_private_subnet_ids = var.vpc.private_subnets
+  vpc_mgmt_subnet_ids    = var.vpc.database_subnets
 }
 #
 # Create a security group for BIG-IP
@@ -64,7 +64,7 @@ module "bigip_sg" {
 
   name        = format("%s-bigip-%s", var.prefix, var.random.hex)
   description = "Security group for BIG-IP Demo"
-  vpc_id      = var.vpcid
+  vpc_id      = var.vpc.vpc_id
 
   ingress_cidr_blocks = [var.allowed_app_cidr]
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
@@ -88,7 +88,7 @@ module "bigip_mgmt_sg" {
 
   name        = format("%s-bigip-mgmt-%s", var.prefix, var.random.hex)
   description = "Security group for BIG-IP Demo"
-  vpc_id      = var.vpcid
+  vpc_id      = var.vpc.vpc_id
 
   ingress_cidr_blocks = [var.allowed_mgmt_cidr]
   ingress_rules       = ["https-443-tcp", "https-8443-tcp", "ssh-tcp"]

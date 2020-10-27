@@ -16,13 +16,12 @@ variable "name" {
   type    = any
   default = "gitlab"
 }
-
+/*
 variable "tags" {
   type = any
 }
-
-variable "bastion_sg_id" {
-  type    = string
+*/
+variable "jumphost_sg_id" {
   default = ""
 }
 

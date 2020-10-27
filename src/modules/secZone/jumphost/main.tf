@@ -27,17 +27,14 @@ module "jumphost" {
   key_name                    = var.keyname
   monitoring                  = false
   vpc_security_group_ids      = [module.jumphost_sg.this_security_group_id]
-  subnet_ids                  = var.public_subnets
+  subnet_ids                  = var.vpc.public_subnets
 
   # build user_data file from template
   user_data = templatefile("${path.module}/files/userdata.tmpl", {})
 
-  # this box needs to know the ip address of the bigip and the juicebox host
-  # it also needs to know the bigip username and password to use
-
   tags = {
     Terraform   = "true"
-    Environment = "dev"
+    Environment = var.env
     Application = var.prefix
   }
 }
@@ -50,7 +47,7 @@ module "jumphost_sg" {
 
   name        = format("%s-jumphost-%s", var.prefix, var.random.hex)
   description = "Security group for BIG-IP Demo"
-  vpc_id      = var.vpcid
+  vpc_id      = var.vpc.vpc_id
 
   ingress_cidr_blocks = [var.allowed_mgmt_cidr]
   ingress_rules       = ["https-443-tcp", "ssh-tcp"]
@@ -58,4 +55,10 @@ module "jumphost_sg" {
   # Allow ec2 instances outbound Internet connectivity
   egress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules       = ["all-all"]
+
+  tags = {
+    Terraform   = "true"
+    Environment = var.env
+    Application = var.prefix
+  }
 }

@@ -1,13 +1,10 @@
-variable "cidr" {
-  description = "Environmental VPC CIDR"
+variable "env" {
+  description = "Project Environment"
+  type = string
 }
 
 variable "prefix" {
   description = "Environment Tagging Prefix"
-}
-
-variable "private_subnets" {
-  description = "Private Subnets"
 }
 
 variable "azs" {
@@ -22,6 +19,6 @@ variable "keyname" {
   description = "AWS KeyPair name"
 }
 
-variable "vpcid" {
-  description = "AWS VPC Id"
+variable "vpc" {
+  description = "AWS VPC"
 }

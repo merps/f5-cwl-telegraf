@@ -1,5 +1,6 @@
 variable "env" {
   description = "Project Environment"
+  type = string
 }
 
 variable "management_subnet_offset" {
@@ -16,6 +17,7 @@ variable "internal_subnet_offset" {
 
 variable "cidr" {
   description = "Environmental VPC CIDR"
+  type = string
 }
 
 variable "prefix" {

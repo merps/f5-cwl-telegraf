@@ -21,7 +21,6 @@ module "vpc" {
   azs    = var.azs
   env    = var.environment
   random = random_id.id
-
 }
 /*
 # Create BIG-IP host as per requirements
@@ -29,16 +28,12 @@ module "vpc" {
 module "bigip" {
   source = "../modules/secZone/bigip"
 
-  prefix           = "${var.project}-${var.environment}"
-  cidr             = var.cidr
-  azs              = var.azs
-  env              = var.environment
-  vpcid            = module.vpc.vpc_id
-  public_subnets   = module.vpc.public_subnets
-  private_subnets  = module.vpc.private_subnets
-  database_subnets = module.vpc.database_subnets
-  random           = random_id.id
-  keyname          = var.ec2_key_name
+  prefix  = "${var.project}-${var.environment}"
+  azs     = var.azs
+  env     = var.environment
+  vpc     = module.vpc
+  random  = random_id.id
+  keyname = var.ec2_key_name
 }
 /*
 # Create Jump host as per requirements
@@ -49,8 +44,7 @@ module "jumphost" {
   prefix         = "${var.project}-${var.environment}"
   azs            = var.azs
   env            = var.environment
-  vpcid          = module.vpc.vpc_id
-  public_subnets = module.vpc.public_subnets
+  vpc            = module.vpc
   random         = random_id.id
   keyname        = var.ec2_key_name
 }
@@ -60,11 +54,21 @@ module "jumphost" {
 module "docker" {
   source = "../modules/appStack/docker"
 
-  prefix          = "${var.project}-${var.environment}"
-  azs             = var.azs
-  vpcid           = module.vpc.vpc_id
-  random          = random_id.id
-  keyname         = var.ec2_key_name
-  cidr            = var.cidr
-  private_subnets = module.vpc.private_subnets
+  prefix         = "${var.project}-${var.environment}"
+  azs            = var.azs
+  env            = var.environment
+  vpc            = module.vpc
+  random         = random_id.id
+  keyname        = var.ec2_key_name
 }
+/*
+# Configure the GitLab
+# TODO as to pass the SG_ID as a string from the JumpHost/Bastion
+#
+module "gitlab-ce" {
+  source = "../modules/appStack/gitlab"
+
+  vpc            = module.vpc
+  jumphost_sg_id = module.jumphost.jumphost_sg_id
+}
+*/

@@ -33,14 +33,14 @@ module "dockerhost" {
   key_name               = var.keyname
   monitoring             = false
   vpc_security_group_ids = [module.dockerhost_sg.this_security_group_id]
-  subnet_ids             = var.private_subnets
+  subnet_ids             = var.vpc.private_subnets
 
 
   user_data = templatefile("${path.module}/files/userdata.tmpl", {})
 
   tags = {
     Terraform   = "true"
-    Environment = "dev"
+    Environment = var.env
     Application = var.prefix
   }
 }
@@ -53,9 +53,9 @@ module "dockerhost_sg" {
 
   name        = format("%s-dockerhost-%s", var.prefix, var.random.hex)
   description = "Security group for BIG-IP Demo"
-  vpc_id      = var.vpcid
+  vpc_id      = var.vpc.vpc_id
 
-  ingress_cidr_blocks = [var.cidr]
+  ingress_cidr_blocks = [var.vpc.vpc_cidr_block]
   ingress_rules       = ["ssh-tcp"]
   ingress_with_cidr_blocks = [
     {
@@ -63,84 +63,84 @@ module "dockerhost_sg" {
       to_port     = 3030
       protocol    = "tcp"
       description = "grafana"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 3400
       to_port     = 3400
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 2003
       to_port     = 2003
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 2004
       to_port     = 2004
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 2023
       to_port     = 2023
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 2024
       to_port     = 2024
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 8125
       to_port     = 8125
       protocol    = "udp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 8126
       to_port     = 8126
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 8080
       to_port     = 8080
       protocol    = "tcp"
       description = "graphite"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 9200
       to_port     = 9200
       protocol    = "tcp"
       description = "elastic search"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 9300
       to_port     = 9300
       protocol    = "tcp"
       description = "elastic search"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
     {
       from_port   = 3300
       to_port     = 3300
       protocol    = "tcp"
       description = "juice shop"
-      cidr_blocks = var.cidr
+      cidr_blocks = var.vpc.vpc_cidr_block
     },
   ]
 
