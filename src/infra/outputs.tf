@@ -40,7 +40,6 @@ output "bigip_password" {
   description = "BIG-IP management password"
   value       = module.bigip.bigip_password
 }
-
 # Jumpbox information
 output "jumphost_public_ip" {
   description = "Jumpbox IP Address"
@@ -51,6 +50,7 @@ output "jumphost_sg_id" {
   description = "Jumpbox Security Group ID"
   value       = module.jumphost.jumphost_sg_id
 }
+
 # Docker hosts
 # TODO Spin over to ECS
 output "web_apps_docker_private_ip" {
@@ -61,4 +61,8 @@ output "web_apps_docker_private_ip" {
 output "mgmt_apps_docker_private_ip" {
   description = "EC2 MGMT (Public) Docker Host Private IPs"
   value = module.mgmt_apps.docker_private_ip
+}
+
+output "random_id" {
+  value = random_id.id
 }

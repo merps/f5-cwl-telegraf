@@ -1,3 +1,7 @@
+data "aws_network_interface" "bar" {
+  count = length(var.public_nic_ids)
+  id    = var.public_nic_ids[count.index]
+}
 #
 # Create and place the inventory.yml file for the ansible demo
 #
@@ -33,12 +37,9 @@ resource "null_resource" "hostvars" {
     }
   }
 }
-
-data "aws_network_interface" "bar" {
-  count = length(var.public_nic_ids)
-  id    = var.public_nic_ids[count.index]
-}
-
+#
+# Create interface for BIG-IP virtual server - juiceshop
+#
 resource "aws_eip" "juiceshop" {
   depends_on                = [null_resource.hostvars]
   count                     = length(var.azs)
@@ -49,7 +50,9 @@ resource "aws_eip" "juiceshop" {
     Name = format("%s-juiceshop-eip-%s%s", var.prefix, var.random.hex, count.index)
   }
 }
-
+#
+# Create interface for BIG-IP virtual server - grafana
+#
 resource "aws_eip" "grafana" {
   depends_on                = [null_resource.hostvars]
   count                     = length(var.azs)
