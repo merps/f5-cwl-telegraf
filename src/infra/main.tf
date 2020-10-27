@@ -23,7 +23,7 @@ module "vpc" {
   random = random_id.id
 }
 /*
-# Create BIG-IP host as per requirements
+# Create BIG-IP appliance as per requirements
 */
 module "bigip" {
   source = "../modules/secZone/bigip"
@@ -49,7 +49,7 @@ module "jumphost" {
   keyname        = var.ec2_key_name
 }
 /*
-# Create docker host as per requirements/hack
+# Create WebApps Tier (Private Subnets) docker host
 */
 module "web_apps" {
   source = "../modules/appStack/docker"
@@ -62,7 +62,9 @@ module "web_apps" {
   keyname        = var.ec2_key_name
   tier           = module.vpc.private_subnets
 }
-
+/*
+# # Create MGMT Tier (Public Subnets) docker host
+*/
 module "mgmt_apps" {
   source = "../modules/appStack/docker"
 
