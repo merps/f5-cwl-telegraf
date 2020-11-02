@@ -14,8 +14,20 @@ data "terraform_remote_state" "infra" {
   }
 }
 /*
-# Existing Demo stack as per GH
+output "thing" {
+  value = flatten(data.terraform_remote_state.infra.outputs.bigip["ext"]["ip"])
+}
+
+output "key" {
+  value = join(".", [data.terraform_remote_state.infra.outputs.aws_build["keypair"], "pem"])
+}
 */
+output "nics" {
+  value = data.terraform_remote_state.infra.outputs.public_nic_ids
+}
+/*
+# Existing Demo stack as per GH
+
 module "ansible-uber-demo" {
   source = "../modules/appStack/ansible-uber-demo"
 
@@ -24,16 +36,12 @@ module "ansible-uber-demo" {
   region            = var.region
   cidr              = var.cidr
   azs               = var.azs
-  env               = var.environment
-  vpcid             = data.terraform_remote_state.infra.outputs.vpc_id
-  public_subnets    = data.terraform_remote_state.infra.outputs.public_subnets
-  public_nic_ids    = data.terraform_remote_state.infra.outputs.public_nic_ids
-  docker_private_ip = data.terraform_remote_state.infra.outputs.web_apps_docker_private_ip
-  random            = data.terraform_remote_state.infra.outputs.random_id
-  keyname           = data.terraform_remote_state.infra.outputs.ec2_key_name
-  keyfile           = concat(data.terraform_remote_state.infra.outputs.ec2_key_name,".pem")
-  bigip_mgmt_addr   = data.terraform_remote_state.infra.outputs.bigip_mgmt_public_ips
-  bigip_mgmt_dns    = data.terraform_remote_state.infra.outputs.mgmt_public_dns
-  bigip_password    = data.terraform_remote_state.infra.outputs.bigip_password
-  bigip_private_add = data.terraform_remote_state.infra.outputs.bigip_private_addresses
+  docker_private_ip = data.terraform_remote_state.infra.outputs.webapps["ip"]
+  random            = tostring(data.terraform_remote_state.infra.outputs.aws_build["env_id"]["id"])
+  keyname           = data.terraform_remote_state.infra.outputs.aws_build["keypair"]
+  keyfile           = data.terraform_remote_state.infra.outputs.aws_build["keypair"]
+  bigip_mgmt_addr   = data.terraform_remote_state.infra.outputs.bigip["mgmt"]["eip"]
+  bigip_mgmt_dns    = data.terraform_remote_state.infra.outputs.bigip["mgmt"]["dns"]
+  bigip_password    = data.terraform_remote_state.infra.outputs.bigip["admin_pw"]
 }
+*/

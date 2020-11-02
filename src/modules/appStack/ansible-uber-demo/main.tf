@@ -3,43 +3,17 @@ data "aws_network_interface" "bar" {
   id    = var.public_nic_ids[count.index]
 }
 #
-# Create and place the inventory.yml file for the ansible demo
-#
-resource "null_resource" "hostvars" {
-  count = length(var.azs)
-  provisioner "file" {
-    content = templatefile(
-      "${path.module}/files/hostvars_template.yml",
-      {
-        bigip_host_ip          = join(",", element(var.bigip_mgmt_addr, count.index))
-        bigip_host_dns         = var.bigip_mgmt_dns[count.index]
-        bigip_domain           = "${var.region}.compute.internal"
-        bigip_username         = "admin"
-        bigip_password         = var.bigip_password
-        ec2_key_name           = var.keyname
-        ec2_username           = "ubuntu"
-        log_pool               = cidrhost(cidrsubnet(var.cidr, 8, count.index + var.internal_subnet_offset), 250)
-        juiceshop_virtual_ip   = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 1)
-        grafana_virtual_ip     = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 2)
-        appserver_gateway_ip   = cidrhost(cidrsubnet(var.cidr, 8, count.index + var.internal_subnet_offset), 1)
-        appserver_guest_ip     = var.docker_private_ip[count.index]
-        appserver_host_ip      = var.jumphost.private_ip[count.index] # the ip address that the jumphost has on the public subnet
-      }
-    )
-
-    destination = "~/inventory.yml"
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file(var.keyfile)
-      host        = var.jumphost.public_ip[count.index]
-    }
-  }
-}
-#
 # Create interface for BIG-IP virtual server - juiceshop
 #
+variable "prefix" {
+  default = ""
+}
+variable "azs" {
+  default = ""
+}
+variable "random" {
+  default = ""
+}
 resource "aws_eip" "juiceshop" {
   depends_on                = [null_resource.hostvars]
   count                     = length(var.azs)
@@ -47,7 +21,7 @@ resource "aws_eip" "juiceshop" {
   network_interface         = data.aws_network_interface.bar[count.index].id
   associate_with_private_ip = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 1)
   tags = {
-    Name = format("%s-juiceshop-eip-%s%s", var.prefix, var.random.hex, count.index)
+    Name = format("%s-juiceshop-eip-%s%s", var.prefix, var.random, count.index)
   }
 }
 #
@@ -60,7 +34,45 @@ resource "aws_eip" "grafana" {
   network_interface         = data.aws_network_interface.bar[count.index].id
   associate_with_private_ip = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 2)
   tags = {
-    Name = format("%s-grafana-eip-%s%s", var.prefix, var.random.hex, count.index)
+    Name = format("%s-grafana-eip-%s%s", var.prefix, var.random, count.index)
+  }
+}
+#
+# Create and place the inventory.yml file for the ansible demo
+#
+variable "bigip_mgmt_addr" {
+  default = ""
+}
+variable "bigip_password" {
+  default = ""
+}
+resource "null_resource" "hostvars" {
+  count = length(var.azs)
+  provisioner "file" {
+    content = templatefile(
+      "${path.module}/files/hostvars_template.yml",
+      {
+        bigip_host_ip          = join(",", element(var.bigip_mgmt_addr, count.index))
+        bigip_username         = "admin"
+        bigip_password         = var.bigip_password
+        ec2_key_name           = var.keyname
+        ec2_username           = "ubuntu"
+        log_pool               = cidrhost(cidrsubnet(var.cidr, 8, count.index + var.internal_subnet_offset), 250)
+        juiceshop_virtual_ip   = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 1)
+        grafana_virtual_ip     = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 2)
+        appserver_gateway_ip   = cidrhost(cidrsubnet(var.cidr, 8, count.index + var.internal_subnet_offset), 1)
+        appserver_guest_ip     = var.docker_private_ip[count.index]
+      }
+    )
+
+    destination = "~/inventory.yml"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.keyfile)
+      host        = var.jumphost.public_ip[count.index]
+    }
   }
 }
 #

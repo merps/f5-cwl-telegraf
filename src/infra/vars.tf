@@ -4,12 +4,12 @@ variable "cidr" {
 
 variable "region" {
   description = "AWS Region to deploy to"
-  default = "ap-southeast-2"
+  default     = "ap-southeast-2"
 }
 
 variable "azs" {
   description = "AZ's in region wish to deploy to"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "secops-profile" {

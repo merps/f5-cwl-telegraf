@@ -41,12 +41,12 @@ module "bigip" {
 module "jumphost" {
   source = "../modules/secZone/jumphost"
 
-  prefix         = "${var.project}-${var.environment}"
-  azs            = var.azs
-  env            = var.environment
-  vpc            = module.vpc
-  random         = random_id.id
-  keyname        = var.ec2_key_name
+  prefix  = "${var.project}-${var.environment}"
+  azs     = var.azs
+  env     = var.environment
+  vpc     = module.vpc
+  random  = random_id.id
+  keyname = var.ec2_key_name
 }
 /*
 # Create WebApps Tier (Private Subnets) docker host
@@ -54,13 +54,13 @@ module "jumphost" {
 module "web_apps" {
   source = "../modules/appStack/docker"
 
-  prefix         = "${var.project}-${var.environment}"
-  azs            = var.azs
-  env            = var.environment
-  vpc            = module.vpc
-  random         = random_id.id
-  keyname        = var.ec2_key_name
-  tier           = module.vpc.private_subnets
+  prefix  = "${var.project}-${var.environment}"
+  azs     = var.azs
+  env     = var.environment
+  vpc     = module.vpc
+  random  = random_id.id
+  keyname = var.ec2_key_name
+  tier    = module.vpc.private_subnets
 }
 /*
 # # Create MGMT Tier (Public Subnets) docker host
@@ -68,11 +68,11 @@ module "web_apps" {
 module "mgmt_apps" {
   source = "../modules/appStack/docker"
 
-  prefix         = "${var.project}-${var.environment}"
-  azs            = var.azs
-  env            = var.environment
-  vpc            = module.vpc
-  random         = random_id.id
-  keyname        = var.ec2_key_name
-  tier           = module.vpc.private_subnets
+  prefix  = "${var.project}-${var.environment}"
+  azs     = var.azs
+  env     = var.environment
+  vpc     = module.vpc
+  random  = random_id.id
+  keyname = var.ec2_key_name
+  tier    = module.vpc.private_subnets
 }
