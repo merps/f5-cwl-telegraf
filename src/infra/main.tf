@@ -2,7 +2,7 @@
 # Set minimum Terraform version and Terraform Cloud backend
 #
 terraform {
-  # required_version = ">= 0.12"
+  required_version = ">= 0.12"
 }
 /*
 # Create a random id
@@ -11,16 +11,33 @@ resource "random_id" "id" {
   byte_length = 2
 }
 /*
+# Create Local object for modules
+*/
+locals {
+  context = {
+    prefix  = tostring("${var.client.project}-${var.client.environment}")
+    azs     = var.aws.azs
+    env     = var.client.environment
+    random  = tostring(random_id.id.id)
+    ec2_kp  = var.aws.ec2_kp
+    profile = var.aws.profile
+  }
+}
+locals {
+  aws_vpc = {
+    cidr   = var.aws.cidr
+    azs    = var.aws.azs
+    region = var.aws.region
+  }
+}
+/*
 # Create VPC as per requirements
 */
 module "vpc" {
   source = "../modules/awsInfra/vpc"
 
-  prefix = "${var.project}-${var.environment}"
-  cidr   = var.cidr
-  azs    = var.azs
-  env    = var.environment
-  random = random_id.id
+  aws_vpc = local.aws_vpc
+  context = local.context
 }
 /*
 # Create BIG-IP appliance as per requirements
@@ -28,12 +45,12 @@ module "vpc" {
 module "bigip" {
   source = "../modules/secZone/bigip"
 
-  prefix  = "${var.project}-${var.environment}"
-  azs     = var.azs
-  env     = var.environment
+  prefix  = "${var.client.project}-${var.client.environment}"
+  azs     = var.aws.azs
+  env     = var.client.environment
   vpc     = module.vpc
   random  = random_id.id
-  keyname = var.ec2_key_name
+  keyname = var.aws.ec2_kp
 }
 /*
 # Create Jump host as per requirements
@@ -41,38 +58,30 @@ module "bigip" {
 module "jumphost" {
   source = "../modules/secZone/jumphost"
 
-  prefix  = "${var.project}-${var.environment}"
-  azs     = var.azs
-  env     = var.environment
+  prefix  = "${var.client.project}-${var.client.environment}"
+  azs     = var.aws.azs
+  env     = var.client.environment
   vpc     = module.vpc
   random  = random_id.id
-  keyname = var.ec2_key_name
+  keyname = var.aws.ec2_kp
 }
 /*
 # Create WebApps Tier (Private Subnets) docker host
 */
-module "web_apps" {
+module "web_tier" {
   source = "../modules/appStack/docker"
 
-  prefix  = "${var.project}-${var.environment}"
-  azs     = var.azs
-  env     = var.environment
-  vpc     = module.vpc
-  random  = random_id.id
-  keyname = var.ec2_key_name
+  context = local.context
   tier    = module.vpc.private_subnets
+  vpc     = module.vpc
 }
 /*
 # # Create MGMT Tier (Public Subnets) docker host
 */
-module "mgmt_apps" {
+module "mgmt_tier" {
   source = "../modules/appStack/docker"
 
-  prefix  = "${var.project}-${var.environment}"
-  azs     = var.azs
-  env     = var.environment
+  context = local.context
+  tier    = module.vpc.database_subnets
   vpc     = module.vpc
-  random  = random_id.id
-  keyname = var.ec2_key_name
-  tier    = module.vpc.private_subnets
 }

@@ -5,15 +5,6 @@ data "aws_network_interface" "bar" {
 #
 # Create interface for BIG-IP virtual server - juiceshop
 #
-variable "prefix" {
-  default = ""
-}
-variable "azs" {
-  default = ""
-}
-variable "random" {
-  default = ""
-}
 resource "aws_eip" "juiceshop" {
   depends_on                = [null_resource.hostvars]
   count                     = length(var.azs)

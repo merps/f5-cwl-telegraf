@@ -13,13 +13,12 @@ data "aws_ami" "latest-ubuntu-docker" {
   }
 }
 
-
 module "dockerhost" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 2.0"
 
-  name           = format("%s-demo-dockerhost-%s", var.prefix, var.random.hex)
-  instance_count = length(var.azs)
+  name           = format("%s-demo-dockerhost-%s", var.context.prefix, var.context.random)
+  instance_count = length(var.context.azs)
 
   ami                         = data.aws_ami.latest-ubuntu-docker.id
   associate_public_ip_address = false
@@ -30,7 +29,7 @@ module "dockerhost" {
       volume_size = 100
     },
   ]
-  key_name               = var.keyname
+  key_name               = var.context.ec2_kp
   monitoring             = false
   vpc_security_group_ids = [module.dockerhost_sg.this_security_group_id]
   subnet_ids             = var.tier
@@ -40,8 +39,8 @@ module "dockerhost" {
 
   tags = {
     Terraform   = "true"
-    Environment = var.env
-    Application = var.prefix
+    Environment = var.context.env
+    Application = var.context.prefix
   }
 }
 
@@ -51,7 +50,7 @@ module "dockerhost" {
 module "dockerhost_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = format("%s-dockerhost-%s", var.prefix, var.random.hex)
+  name        = format("%s-demo-dockerhost-%s", var.context.prefix, var.context.random)
   description = "Security group for BIG-IP Demo"
   vpc_id      = var.vpc.vpc_id
 

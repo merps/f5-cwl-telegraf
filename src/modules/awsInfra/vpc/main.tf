@@ -5,38 +5,38 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name                 = format("%s-vpc-%s", var.prefix, var.random.hex)
-  cidr                 = var.cidr
+  name                 = format("%s-vpc-%s", var.context.prefix, var.context.random)
+  cidr                 = var.aws_vpc.cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  azs = var.azs
+  azs = var.aws_vpc.azs
 
   # vpc public subnet used for external interface
-  public_subnets = [for num in range(length(var.azs)) :
-    cidrsubnet(var.cidr, 8, num + var.external_subnet_offset)
+  public_subnets = [for num in range(length(var.aws_vpc.azs)) :
+    cidrsubnet(var.aws_vpc.cidr, 8, num + var.external_subnet_offset)
   ]
 
   # vpc private subnet used for internal 
   private_subnets = [
-    for num in range(length(var.azs)) :
-    cidrsubnet(var.cidr, 8, num + var.internal_subnet_offset)
+    for num in range(length(var.aws_vpc.azs)) :
+    cidrsubnet(var.aws_vpc.cidr, 8, num + var.internal_subnet_offset)
   ]
 
   enable_nat_gateway = true
 
   # using the database subnet method since it allows a public route
   database_subnets = [
-    for num in range(length(var.azs)) :
-    cidrsubnet(var.cidr, 8, num + var.management_subnet_offset)
+    for num in range(length(var.aws_vpc.azs)) :
+    cidrsubnet(var.aws_vpc.cidr, 8, num + var.management_subnet_offset)
   ]
   create_database_subnet_group           = true
   create_database_subnet_route_table     = true
   create_database_internet_gateway_route = true
 
   tags = {
-    Name        = format("%s-vpc-%s", var.prefix, var.random.hex)
+    Name        = format("%s-vpc-%s", var.context.prefix, var.context.random)
     Terraform   = "true"
-    Environment = var.env
+    Environment = var.context.env
   }
 }

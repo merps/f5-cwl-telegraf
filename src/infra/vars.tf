@@ -1,33 +1,16 @@
-variable "cidr" {
-  description = "VPC CIDR for Inspection gateway."
+variable "aws" {
+  type = object({
+    region  = string
+    azs     = list(string)
+    cidr    = string
+    ec2_kp  = string
+    profile = string
+  })
 }
-
-variable "region" {
-  description = "AWS Region to deploy to"
-  default     = "ap-southeast-2"
-}
-
-variable "azs" {
-  description = "AZ's in region wish to deploy to"
-  type        = list(string)
-}
-
-variable "secops-profile" {
-  description = "Account name to configure Environment for."
-}
-
-variable "customer" {
-  description = "Customer Short name AWS deployment is for."
-}
-
-variable "ec2_key_name" {
-  description = "EC2 KeyPair name"
-}
-
-variable "environment" {
-  description = "Customer Environment short name for deployment."
-}
-
-variable "project" {
-  description = "Customer Project short name for deployment."
+variable "client" {
+  type = object({
+    name        = string
+    project     = string
+    environment = string
+  })
 }
