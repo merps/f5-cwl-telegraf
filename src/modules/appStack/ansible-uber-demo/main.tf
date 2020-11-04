@@ -40,12 +40,6 @@ resource "aws_eip" "grafana" {
 #
 # Create and place the inventory.yml file for the ansible demo
 #
-variable "bigip_mgmt_addr" {
-  default = ""
-}
-variable "bigip_password" {
-  default = ""
-}
 resource "null_resource" "hostvars" {
   count = length(var.azs)
   provisioner "file" {
@@ -70,7 +64,7 @@ resource "null_resource" "hostvars" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file(var.keyfile)
+      private_key = file("${var.keyname}.pem")
       host        = var.jumphost.public_ip[count.index]
     }
   }
@@ -82,13 +76,13 @@ resource "null_resource" "ansible" {
   depends_on = [null_resource.hostvars]
   count      = length(var.azs)
   provisioner "file" {
-    source      = var.keyfile
+    source      = "${var.keyname}.pem"
     destination = "~/${var.keyname}.pem"
 
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file(var.keyfile)
+      private_key = file("${var.keyname}.pem")
       host        = var.jumphost.public_ip[count.index]
     }
   }
@@ -107,7 +101,7 @@ resource "null_resource" "ansible" {
       type        = "ssh"
       timeout     = "10m"
       user        = "ubuntu"
-      private_key = file(var.keyfile)
+      private_key = file("${var.keyname}.pem")
       host        = var.jumphost.public_ip[count.index]
     }
   }

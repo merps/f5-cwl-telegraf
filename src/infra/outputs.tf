@@ -81,21 +81,15 @@ output "bigip_password" {
 output "jumphost" {
   description = "Jumpbox Host"
   value = {
-    "sg" = module.jumphost.jumphost_sg_id,
-    "eip" = [module.jumphost.jumphost_public_ip]
+    sg = module.jumphost.jumphost_sg_id,
+    eip = [module.jumphost.jumphost_public_ip]
   }
 }
 # Docker hosts
 # TODO Spin over to ECS
-output "webapps" {
-  description = "EC2 WebApps (Private) Docker Host"
-  value = {
-    "ip" = [module.web_apps.docker_private_ip]
-  }
+output "web_apps_ip" {
+  value = module.web_apps.docker_private_ip
 }
-output "mgmtapps" {
-  description = "EC2 WebApps (Private) Docker Host"
-  value = {
-    "ip" = [module.mgmt_apps.docker_private_ip]
-  }
+output "mgmt_apps_ip" {
+  value = module.mgmt_apps.docker_private_ip
 }
