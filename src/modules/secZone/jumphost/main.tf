@@ -4,7 +4,7 @@ data "aws_ami" "latest-ubuntu" {
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
   }
 
   filter {
@@ -18,13 +18,13 @@ module "jumphost" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 2.0"
 
-  name           = format("%s-demo-jumphost-%s", var.prefix, var.random.hex)
-  instance_count = length(var.azs)
+  name           = format("%s-demo-jumphost-%s", var.context.prefix, var.context.random)
+  instance_count = length(var.context.azs)
 
   ami                         = data.aws_ami.latest-ubuntu.id
   associate_public_ip_address = true
   instance_type               = "t2.xlarge"
-  key_name                    = var.keyname
+  key_name                    = var.context.ec2_kp
   monitoring                  = false
   vpc_security_group_ids      = [module.jumphost_sg.this_security_group_id]
   subnet_ids                  = var.vpc.public_subnets
@@ -34,8 +34,8 @@ module "jumphost" {
 
   tags = {
     Terraform   = "true"
-    Environment = var.env
-    Application = var.prefix
+    Environment = var.context.env
+    Application = var.context.prefix
   }
 }
 
@@ -45,7 +45,7 @@ module "jumphost" {
 module "jumphost_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = format("%s-jumphost-%s", var.prefix, var.random.hex)
+  name        = format("%s-jumphost-%s", var.context.prefix, var.context.random)
   description = "Security group for BIG-IP Demo"
   vpc_id      = var.vpc.vpc_id
 
@@ -58,7 +58,7 @@ module "jumphost_sg" {
 
   tags = {
     Terraform   = "true"
-    Environment = var.env
-    Application = var.prefix
+    Environment = var.context.env
+    Application = var.context.prefix
   }
 }

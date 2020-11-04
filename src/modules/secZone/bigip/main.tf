@@ -10,7 +10,7 @@ resource "random_password" "password" {
 # Create Secret Store and Store BIG-IP Password
 #
 resource "aws_secretsmanager_secret" "bigip" {
-  name = format("%s-bigip-secret-%s", var.prefix, var.random.hex)
+  name = format("%s-bigip-secret-%s", var.context.prefix, var.context.random)
 }
 resource "aws_secretsmanager_secret_version" "bigip-pwd" {
   secret_id     = aws_secretsmanager_secret.bigip.id
@@ -22,11 +22,11 @@ resource "aws_secretsmanager_secret_version" "bigip-pwd" {
 module "bigip" {
   source = "github.com/merps/terraform-aws-bigip?ref=ip-outputs"
 
-  prefix                      = format("%s-bigip-3-nic_with_new_vpc-%s", var.prefix, var.random.hex)
+  prefix                      = format("%s-bigip-3-nic_with_new_vpc-%s", var.context.prefix, var.context.random)
   aws_secretmanager_secret_id = aws_secretsmanager_secret.bigip.id
   f5_ami_search_name          = "F5 BIGIP-15.1.0.2-0.0.9 PAYG-Best 25Mbps*"
-  f5_instance_count           = 1
-  ec2_key_name                = var.keyname
+  f5_instance_count           = 2
+  ec2_key_name                = var.context.ec2_kp
   ec2_instance_type           = "c4.xlarge"
 
   cloud_init = templatefile("${path.module}/files/do-declaration.tpl", {
@@ -62,7 +62,7 @@ module "bigip" {
 module "bigip_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = format("%s-bigip-%s", var.prefix, var.random.hex)
+  name        = format("%s-bigip-%s", var.context.prefix, var.context.random)
   description = "Security group for BIG-IP Demo"
   vpc_id      = var.vpc.vpc_id
 
@@ -86,7 +86,7 @@ module "bigip_sg" {
 module "bigip_mgmt_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name        = format("%s-bigip-mgmt-%s", var.prefix, var.random.hex)
+  name        = format("%s-bigip-mgmt-%s", var.context.prefix, var.context.random)
   description = "Security group for BIG-IP Demo"
   vpc_id      = var.vpc.vpc_id
 

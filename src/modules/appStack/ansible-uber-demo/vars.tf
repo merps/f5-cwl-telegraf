@@ -1,4 +1,5 @@
-variable "bip" {
+/*
+variable "bigip" {
   type = object({
     bigip_password  = string
     bigip_mgmt_addr = list(string)
@@ -23,3 +24,11 @@ variable "anisble" {
     jumphost          = list(string)
   })
 }
+*/
+variable "internal_subnet_offset" {
+  default = 20
+}
+variable "bigip" {}
+variable "aws_build" {}
+variable "ansible" {}
+variable "vpc" {}
