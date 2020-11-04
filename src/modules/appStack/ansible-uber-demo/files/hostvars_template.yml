@@ -1,7 +1,6 @@
 all:
   vars:
-    app_server_address: "${appserver_guest_ip}" # an address that is assigned to the juice shop and grafana virtual server pool members. If the add_ubuntu_interface variable is set to true, this address will al
-so be assigned to the eth1 interface of the Ubuntu server
+    app_server_address: "${appserver_guest_ip}" # an address that is assigned to the juice shop and grafana virtual server pool members.
 
   children:
     servers:
