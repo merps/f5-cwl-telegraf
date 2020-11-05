@@ -1,4 +1,4 @@
-data "aws_network_interface" "bar" {
+data "aws_network_interface" "f5_nic" {
   count = length(var.f5.bigip.public_nic_ids)
   id    = var.f5.bigip.public_nic_ids[count.index]
 }
@@ -9,7 +9,7 @@ locals {
 # Create and place the inventory.yml file for the ansible demo
 #
 resource "null_resource" "hostvars" {
-  count = length(var.vpc.public_subnets)
+  count = length(var.azs)
   provisioner "file" {
     content = templatefile(
       "${path.module}/files/hostvars_template.yml",
@@ -20,8 +20,8 @@ resource "null_resource" "hostvars" {
         ec2_key_name         = var.aws_build.keypair
         ec2_username         = var.ec2_user
         log_pool             = cidrhost(cidrsubnet(var.vpc.vpc_cidr_block, 8, count.index + var.internal_subnet_offset), 250)
-        juiceshop_virtual_ip = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 1)
-        grafana_virtual_ip   = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 2)
+        juiceshop_virtual_ip = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips),1)
+        grafana_virtual_ip   = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips),2)
         appserver_gateway_ip = cidrhost(cidrsubnet(var.vpc.vpc_cidr_block, 8, count.index + var.internal_subnet_offset), 1)
         appserver_guest_ip   = var.ansible.docker_private_ip[count.index]
       }
@@ -48,10 +48,10 @@ resource "aws_eip" "juiceshop" {
   # the following depends_on is intended as a workaround for this condition
   # if the error still occurs an additional 'terraform apply' completes the environment build
   depends_on                = [null_resource.hostvars]
-  count                     = length(var.vpc.public_subnets)
+  count                     = length(var.azs)
   vpc                       = true
-  network_interface         = data.aws_network_interface.bar[count.index].id
-  associate_with_private_ip = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 1)
+  network_interface         = data.aws_network_interface.f5_nic[count.index].id
+  associate_with_private_ip = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips), 1)
   tags = {
     Name = format("%s-juiceshop-eip-%s%s", local.prefix, var.aws_build.random, count.index)
   }
@@ -68,10 +68,10 @@ resource "aws_eip" "grafana" {
   # the following depends_on is intended as a workaround for this condition
   # if the error still occurs an additional 'terraform apply' completes the environment build
   depends_on                = [null_resource.hostvars]
-  count                     = length(var.vpc.public_subnets)
+  count                     = length(var.azs)
   vpc                       = true
-  network_interface         = data.aws_network_interface.bar[count.index].id
-  associate_with_private_ip = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 2)
+  network_interface         = data.aws_network_interface.f5_nic[count.index].id
+  associate_with_private_ip = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips), 2)
   tags = {
     Name = format("%s-grafana-eip-%s%s", local.prefix, var.aws_build.random, count.index)
   }
@@ -81,7 +81,7 @@ resource "aws_eip" "grafana" {
 #
 resource "null_resource" "ansible" {
   depends_on = [null_resource.hostvars]
-  count      = length(var.vpc.public_subnets)
+  count      = length(var.azs)
   provisioner "file" {
     source      = "${var.aws_build.keypair}.pem"
     destination = "~/${var.aws_build.keypair}.pem"

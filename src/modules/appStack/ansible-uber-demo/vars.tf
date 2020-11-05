@@ -32,6 +32,10 @@ variable "ec2_user" {
   description = "Default ec2 user"
   default = "ubuntu"
 }
+variable "azs" {
+  description = "testinghack"
+  default = ["ap-southeast-2a", "ap-southeast-2b"]
+}
 variable "bigip_admin" {
   description = "Default BIG-IP 'admin'"
   default = "admin"
