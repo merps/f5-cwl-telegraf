@@ -25,7 +25,6 @@ tmos_declared:
       dnsServers:
         class: DNS
         nameServers:
-          - 169.254.169.254
           - 107.162.158.150
           - 107.162.158.151
           - 8.8.8.8
