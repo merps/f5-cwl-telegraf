@@ -28,7 +28,23 @@ variable "anisble" {
 variable "internal_subnet_offset" {
   default = 20
 }
-variable "f5" {}
-variable "aws_build" {}
-variable "ansible" {}
-variable "vpc" {}
+variable "ec2_user" {
+  description = "Default ec2 user"
+  default = "ubuntu"
+}
+variable "bigip_admin" {
+  description = "Default BIG-IP 'admin'"
+  default = "admin"
+}
+variable "f5" {
+  description = "Passed Module Object"
+}
+variable "aws_build" {
+    description = "Passed Module Object"
+}
+variable "ansible" {
+    description = "Passed Module Object"
+}
+variable "vpc" {
+  description = "Passed Module Object"
+}

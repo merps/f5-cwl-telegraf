@@ -1,5 +1,5 @@
 data "aws_network_interface" "bar" {
-  count = length(var.vpc.public_subnets)
+  count = length(var.f5.bigip.public_nic_ids)
   id    = var.f5.bigip.public_nic_ids[count.index]
 }
 locals {
@@ -15,10 +15,10 @@ resource "null_resource" "hostvars" {
       "${path.module}/files/hostvars_template.yml",
       {
         bigip_host_ip        = join(",", [element(flatten(var.f5.bigip.mgmt_addresses), count.index)])
-        bigip_username       = "admin"
+        bigip_username       = var.bigip_admin
         bigip_password       = tostring(var.f5.admin_pw)
         ec2_key_name         = var.aws_build.keypair
-        ec2_username         = "ubuntu"
+        ec2_username         = var.ec2_user
         log_pool             = cidrhost(cidrsubnet(var.vpc.vpc_cidr_block, 8, count.index + var.internal_subnet_offset), 250)
         juiceshop_virtual_ip = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 1)
         grafana_virtual_ip   = element(flatten(data.aws_network_interface.bar[count.index].private_ips), 2)
@@ -30,7 +30,7 @@ resource "null_resource" "hostvars" {
 
     connection {
       type        = "ssh"
-      user        = "ubuntu"
+      user        = var.ec2_user
       private_key = file("${var.aws_build.keypair}.pem")
       host        = var.ansible.jumphost.jumphost_public_ip[count.index]
     }
@@ -40,6 +40,13 @@ resource "null_resource" "hostvars" {
 # Create interface for BIG-IP virtual server - juiceshop
 #
 resource "aws_eip" "juiceshop" {
+  # an occasional race condition with between creating the ElasticIP addresses
+  # and the BIG-IP instances occurs causing the following error
+  # Error: Failure associating EIP: IncorrectInstanceState: The pending-instance-creation instance to which
+  # 'eni-xxxxxxxxxxxxxxxxx' is attached is not in a valid state for this operation
+  # https://github.com/terraform-providers/terraform-provider-aws/issues/6189
+  # the following depends_on is intended as a workaround for this condition
+  # if the error still occurs an additional 'terraform apply' completes the environment build
   depends_on                = [null_resource.hostvars]
   count                     = length(var.vpc.public_subnets)
   vpc                       = true
@@ -53,6 +60,13 @@ resource "aws_eip" "juiceshop" {
 # Create interface for BIG-IP virtual server - grafana
 #
 resource "aws_eip" "grafana" {
+    # an occasional race condition with between creating the ElasticIP addresses
+  # and the BIG-IP instances occurs causing the following error
+  # Error: Failure associating EIP: IncorrectInstanceState: The pending-instance-creation instance to which
+  # 'eni-xxxxxxxxxxxxxxxxx' is attached is not in a valid state for this operation
+  # https://github.com/terraform-providers/terraform-provider-aws/issues/6189
+  # the following depends_on is intended as a workaround for this condition
+  # if the error still occurs an additional 'terraform apply' completes the environment build
   depends_on                = [null_resource.hostvars]
   count                     = length(var.vpc.public_subnets)
   vpc                       = true
@@ -79,10 +93,11 @@ resource "null_resource" "ansible" {
       host        = var.ansible.jumphost.jumphost_public_ip[count.index]
     }
   }
-  # TODO cloning branch for cloud-init updates in base
+  # TODO cloning branch for cloud-init updates in base - THERE BE MADNESS!!!
+  #
   provisioner "remote-exec" {
     inline = [
-      "chmod 600 /home/ubuntu/${var.aws_build.keypair}.pem",
+      "chmod 600 /home/${var.ec2_user}/${var.aws_build.keypair}.pem",
       "git clone -b cloud-init --single-branch https://github.com/merps/ansible-uber-demo.git",
       "cp /home/ubuntu/inventory.yml /home/ubuntu/ansible-uber-demo/ansible/inventory.yml",
       "cd /home/ubuntu/ansible-uber-demo/",
