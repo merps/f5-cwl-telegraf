@@ -1,5 +1,5 @@
 # Network Information
-output "vpc" {
+output "aws_infra" {
   description = "AWS VPC ID for the created VPC"
   value = {
     vpc_id          = module.vpc.vpc_id,
@@ -19,17 +19,16 @@ output "aws_build" {
     env     = var.client.environment
   }
 }
-# BIG-IP Information
-output "bigip" {
-  description = "BIG-IP instance information"
+# Security
+# TODO - BIG-IP Password for lazy reasons, move to secure
+output "f5" {
+  # description = "BIG-IP instance information"
   value = module.bigip
 }
-# Jumpbox information
 output "jumphost" {
-  description = "Jumpbox Host"
   value = module.jumphost
 }
-# Docker hosts
+# AppStack
 # TODO Spin over to ECS
 output "web_tier_private_ip" {
   value = module.web_tier.docker_private_ip

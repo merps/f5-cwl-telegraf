@@ -28,7 +28,7 @@ variable "anisble" {
 variable "internal_subnet_offset" {
   default = 20
 }
-variable "bigip" {}
+variable "f5" {}
 variable "aws_build" {}
 variable "ansible" {}
 variable "vpc" {}

@@ -15,7 +15,7 @@ data "terraform_remote_state" "infra" {
 locals {
   ansible = {
     docker_private_ip = data.terraform_remote_state.infra.outputs.web_tier_private_ip
-    jumphost          = data.terraform_remote_state.infra.outputs.jumphost.jumphost_public_ip
+    jumphost          = data.terraform_remote_state.infra.outputs.jumphost
   }
 }
 
@@ -26,6 +26,6 @@ module "ansible-uber" {
 
   ansible   = local.ansible
   aws_build = data.terraform_remote_state.infra.outputs.aws_build
-  bigip     = data.terraform_remote_state.infra.outputs.bigip
-  vpc       = data.terraform_remote_state.infra.outputs.vpc
+  f5        = data.terraform_remote_state.infra.outputs.f5
+  vpc       = data.terraform_remote_state.infra.outputs.aws_infra
 }

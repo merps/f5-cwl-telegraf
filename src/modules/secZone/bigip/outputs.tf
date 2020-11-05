@@ -1,4 +1,8 @@
-
+output "bigip" {
+  value = module.bigip
+}
+# TODO - commented out to pass complete object
+/*
 output "bigip" {
   description = "BIG-IP instance information"
   value = {
@@ -17,4 +21,10 @@ output "bigip" {
       ip = flatten(module.bigip.private_addresses)
     }
   }
+}
+*/
+# TODO - lazy, just pure lazy. need to figure out key extraction
+output "admin_pw" {
+  value     = random_password.password.result
+  sensitive = true
 }
