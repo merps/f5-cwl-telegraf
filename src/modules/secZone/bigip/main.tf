@@ -24,10 +24,10 @@ module "bigip" {
 
   prefix                      = format("%s-bigip-3-nic_with_new_vpc-%s", var.context.prefix, var.context.random)
   aws_secretmanager_secret_id = aws_secretsmanager_secret.bigip.id
-  f5_ami_search_name          = "F5 BIGIP-15.1.0.2-0.0.9 PAYG-Best 25Mbps*"
-  f5_instance_count           = 2
+  f5_ami_search_name          = var.f5_ami_search_name
+  f5_instance_count           = var.f5_instance_count
   ec2_key_name                = var.context.ec2_kp
-  ec2_instance_type           = "c4.xlarge"
+  ec2_instance_type           = var.ec2_instance_type
 
   cloud_init = templatefile("${path.module}/files/do-declaration.tpl", {
     admin_pwd = random_password.password.result,
