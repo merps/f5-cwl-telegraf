@@ -22,5 +22,4 @@ all:
             password: "${bigip_password}" # the password that will be used to access the BIG-IP management endpoint
             validate_certs: false # since these boxes are assumed to have self-signed certs validatation is disabled
           juiceshop_virtual_address: "${juiceshop_virtual_ip}" # the ip address that will become the listener (virtual server) of the juice shop application
-          grafana_virtual_address: "${grafana_virtual_ip}" # the ip address that will become the listener (virtual server) of the grafana application
           log_pool: "${log_pool}" # the ip address of the virtual server and looging pool that the LTM Request Policy and ASM Logs can target

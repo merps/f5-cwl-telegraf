@@ -21,14 +21,10 @@ resource "aws_secretsmanager_secret_version" "bigip-pwd" {
 #
 module "bigip" {
   source = "github.com/merps/terraform-aws-bigip?ref=ip-outputs"
-
   prefix                      = format("%s-bigip-3-nic_with_new_vpc-%s", var.context.prefix, var.context.random)
   aws_secretmanager_secret_id = aws_secretsmanager_secret.bigip.id
-  f5_ami_search_name          = var.f5_ami_search_name
-  f5_instance_count           = var.f5_instance_count
+  f5_instance_count = 2
   ec2_key_name                = var.context.ec2_kp
-  ec2_instance_type           = var.ec2_instance_type
-
   cloud_init = templatefile("${path.module}/files/do-declaration.tpl", {
     admin_pwd = random_password.password.result,
     root_pwd  = random_password.password.result,
@@ -61,14 +57,11 @@ module "bigip" {
 #
 module "bigip_sg" {
   source = "terraform-aws-modules/security-group/aws"
-
   name        = format("%s-bigip-%s", var.context.prefix, var.context.random)
   description = "Security group for BIG-IP Demo"
   vpc_id      = var.vpc.vpc_id
-
   ingress_cidr_blocks = [var.allowed_app_cidr]
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
-
   ingress_with_source_security_group_id = [
     {
       rule                     = "all-all"
@@ -85,14 +78,11 @@ module "bigip_sg" {
 #
 module "bigip_mgmt_sg" {
   source = "terraform-aws-modules/security-group/aws"
-
   name        = format("%s-bigip-mgmt-%s", var.context.prefix, var.context.random)
   description = "Security group for BIG-IP Demo"
   vpc_id      = var.vpc.vpc_id
-
   ingress_cidr_blocks = [var.allowed_mgmt_cidr]
   ingress_rules       = ["https-443-tcp", "https-8443-tcp", "ssh-tcp"]
-
   ingress_with_source_security_group_id = [
     {
       rule                     = "all-all"

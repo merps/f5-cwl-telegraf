@@ -62,7 +62,7 @@ ec2_key_name | EC2 KeyPair for Instance Creation | String | *NA* | **Yes**
 
 ***c)***    Third, intialise and plan the terraform deployment as follows:
 ```
-cd f5-cwl-tele/src/secure/
+cd f5-cwl-tele/src/infra/
 terraform init
 terraform plan --vars-file ../variables.tfvars
 ```

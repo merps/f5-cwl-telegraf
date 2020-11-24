@@ -1,9 +1,28 @@
+locals {
+  prefix = "${var.aws_build.project}-${var.aws_build.env}"
+  tag = format("%s-bigip-3-nic_with_new_vpc-%s-%s", local.prefix, var.aws_build.random, 0)
+}
+data "aws_instance" "f5_instance" {
+  filter {
+    name = "tag:Name"
+    values = [local.tag]
+  }
+}
 data "aws_network_interface" "f5_nic" {
   count = length(var.f5.bigip.public_nic_ids)
   id    = var.f5.bigip.public_nic_ids[count.index]
 }
-locals {
-  prefix = "${var.aws_build.project}-${var.aws_build.env}"
+#
+# Create secondary IP address for Grafana
+#
+resource "aws_network_interface" "grafana" {
+  count = length(var.azs)
+  subnet_id       = var.vpc.public_subnets[count.index]
+
+  attachment {
+    instance     = data.aws_instance.f5_instance.id
+    device_index = 2
+  }
 }
 #
 # Create and place the inventory.yml file for the ansible demo
@@ -20,8 +39,9 @@ resource "null_resource" "hostvars" {
         ec2_key_name         = var.aws_build.keypair
         ec2_username         = var.ec2_user
         log_pool             = cidrhost(cidrsubnet(var.vpc.vpc_cidr_block, 8, count.index + var.internal_subnet_offset), 250)
-        juiceshop_virtual_ip = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips),1)
-        grafana_virtual_ip   = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips),2)
+        juiceshop_virtual_ip = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips), 1)
+        # grafana_virtual_ip   = element(flatten(data.aws_network_interface.f5_nic[count.index].private_ips), 2)
+        # YAML template:           # grafana_virtual_address: "${grafana_virtual_ip}" # F5 VS
         appserver_gateway_ip = cidrhost(cidrsubnet(var.vpc.vpc_cidr_block, 8, count.index + var.internal_subnet_offset), 1)
         appserver_guest_ip   = var.ansible.docker_private_ip[count.index]
       }
