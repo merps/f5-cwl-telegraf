@@ -14,7 +14,8 @@ data "aws_network_interface" "f5_nic" {
 }
 #
 # Create secondary IP address for Grafana
-#
+# TODO removed due in unknown private IP ENI association
+/*
 resource "aws_network_interface" "grafana" {
   count = length(var.azs)
   subnet_id       = var.vpc.public_subnets[count.index]
@@ -24,6 +25,7 @@ resource "aws_network_interface" "grafana" {
     device_index = 2
   }
 }
+*/
 #
 # Create and place the inventory.yml file for the ansible demo
 #
@@ -78,7 +80,8 @@ resource "aws_eip" "juiceshop" {
 }
 #
 # Create interface for BIG-IP virtual server - grafana
-#
+# TODO removed due in unknown private IP ENI association
+/*
 resource "aws_eip" "grafana" {
     # an occasional race condition with between creating the ElasticIP addresses
   # and the BIG-IP instances occurs causing the following error
@@ -96,6 +99,7 @@ resource "aws_eip" "grafana" {
     Name = format("%s-grafana-eip-%s%s", local.prefix, var.aws_build.random, count.index)
   }
 }
+*/
 #
 # Hack for remote exec of provisioning
 #
