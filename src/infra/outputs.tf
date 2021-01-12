@@ -24,6 +24,8 @@ output "aws_build" {
 output "f5" {
   # description = "BIG-IP instance information"
   value = module.bigip
+  # added for v0.14 of TF
+  sensitive = true
 }
 output "jumphost" {
   value = module.jumphost

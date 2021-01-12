@@ -29,3 +29,7 @@ module "ansible-uber" {
   f5        = data.terraform_remote_state.infra.outputs.f5
   vpc       = data.terraform_remote_state.infra.outputs.aws_infra
 }
+
+module "eap" {
+  source = "../modules/secZone/eap"
+}
