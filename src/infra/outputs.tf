@@ -25,6 +25,7 @@ output "f5" {
   # description = "BIG-IP instance information"
   value = module.bigip
   # added for v0.14 of TF
+  # https://www.terraform.io/upgrade-guides/0-14.html#sensitive-values-in-plan-output 
   sensitive = true
 }
 output "jumphost" {
