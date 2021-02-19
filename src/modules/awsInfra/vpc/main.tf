@@ -3,7 +3,7 @@
 # using directions from https://clouddocs.f5.com/cloud/public/v1/aws/AWS_multiNIC.html
 #
 module "vpc_min" {
-  count = var.create_min && ( var.create_max ? 1 : 0 ) ? 1 : 0
+  count = var.create_min && [var.create_max ? 0 : 1] ? 1 : 0
 
   source = "terraform-aws-modules/vpc/aws"
   name                 = format("%s-min-%s", var.tags.prefix, var.tags.random)
