@@ -40,7 +40,7 @@ output "nat_public_ips" {
 # VPC
 output "vpc_id_max" {
   description = "The ID of the VPC"
-  value       = var.create_max ? module.vpc_max[1].vpc_id : null
+  value       = var.create_max ? module.vpc_max[0].vpc_id : null
 }
 /*
 output "vpc_cidr_block_max" {
