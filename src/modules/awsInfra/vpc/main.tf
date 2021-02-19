@@ -81,4 +81,3 @@ module "vpc_max" {
     Environment = var.tags.environment
   }
 }
-*/
