@@ -41,7 +41,7 @@ module "vpc_min" {
     Environment = var.tags.environment
   }
 }
-
+/*
 module "vpc_max" {
   count = var.create_min ? 0 : 1
   source = "terraform-aws-modules/vpc/aws"
@@ -81,3 +81,4 @@ module "vpc_max" {
     Environment = var.tags.environment
   }
 }
+*/
