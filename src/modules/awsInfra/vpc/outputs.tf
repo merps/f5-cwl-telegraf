@@ -2,20 +2,20 @@
 
 output "vpc_id" {
   description = "The ID of the VPC"
-  value       = var.create_min ? module.vpc_max[0].vpc_id : null || var.create_max ? module.vpc_min[0].vpc_id : null
+  value       = var.create_min ? module.vpc_min[0].vpc_id : module.vpc_max[0].vpc_id
 }
 
 output "vpc_cidr_block" {
   description = "The CIDR block of the VPC"
-  value       = concat(module.vpc_min[0].*.vpc_cidr_block,[""])[0]
+  value       = var.create_min ? concat(module.vpc_min[0].*.vpc_cidr_block,[""])[0] : concat(module.vpc_max[0].*.vpc_cidr_block,[""])[0]
 }
 
 # Subnets
 output "private_subnets" {
   description = "List of IDs of private subnets"
-  value = var.create_min ? module.vpc_max[0].private_subnets : null || var.create_max ? module.vpc_min[0].private_subnets : null
+  value = var.create_min ? module.vpc_min[0].private_subnets : module.vpc_max[0].private_subnets
 }
-
+/*
 output "public_subnets" {
   description = "List of IDs of public subnets"
   value       = module.vpc_min[0].public_subnets
