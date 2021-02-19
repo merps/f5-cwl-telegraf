@@ -2,7 +2,7 @@
 
 output "vpc_id" {
   description = "The ID of the VPC"
-  value       = module.vpc_min.vpc_id || module.vpc_max.vpc_id
+  value       = var.create_min ? module.vpc_max[0].vpc_id : null || var.create_max ? module.vpc_min[0].vpc_id : null
 }
 
 output "vpc_cidr_block" {
