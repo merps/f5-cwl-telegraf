@@ -37,5 +37,3 @@ variable "create_max" {
   type        = bool
   default     = false
 }
-
-

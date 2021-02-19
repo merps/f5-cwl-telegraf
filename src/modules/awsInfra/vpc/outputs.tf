@@ -2,7 +2,7 @@
 
 output "vpc_id_min" {
   description = "The ID of the VPC"
-  value       = var.create_min ? module.vpc_min[0].vpc_id : null
+  value       = var.create_min ? module.vpc[0].vpc_id : null
 }
 /*
 output "vpc_cidr_block" {
@@ -36,13 +36,13 @@ output "nat_public_ips" {
   description = "List of public Elastic IPs created for AWS NAT Gateway"
   value       = module.vpc_min[0].nat_public_ips
 }
-
+*/
 # VPC
-output "vpc_id_max" {
+output "vpc_id" {
   description = "The ID of the VPC"
-  value       = var.create_max ? module.vpc_max[0].vpc_id : null
+  value       = var.create_max ? module.vpc[1].vpc_id : null
 }
-
+/*
 output "vpc_cidr_block_max" {
   description = "The CIDR block of the VPC"
   value       = concat(module.vpc_max[0].*.vpc_cidr_block,[""])[0]
