@@ -37,6 +37,6 @@ module "vpc" {
   tags = {
     Name        = format("%s-vpc-%s", var.tags.prefix, var.tags.random)
     Terraform   = "true"
-    Environment = var.tags.env
+    Environment = var.tags.environment
   }
 }

@@ -10,7 +10,7 @@ variable "internal_subnet_offset" {
   default = 20
 }
 /*
-variable "env" {
+variable "environment" {
   description = "Project Environment"
   type = string
 }
@@ -40,7 +40,7 @@ variable "aws_vpc" {
 variable "tags" {
   type = object({
     prefix  = string
-    env     = string
+    environment     = string
     random  = string
   })
 }
