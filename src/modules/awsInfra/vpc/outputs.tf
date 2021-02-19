@@ -4,7 +4,12 @@ output "vpc_id" {
   value       = var.create_min ? module.vpc_min[0].vpc_id : module.vpc_max_public[0].vpc_id
 }
 
-output "vpc_id_management" {
+output private_vpc_id {
+  description = "The VPC ID of the management VPC for VPC_MAX"
+  value = var.create_max ? module.vpc_max_private[0].vpc_id : null
+}
+
+output "management_vpc_id" {
   description = "The VPC ID of the management VPC for VPC_MAX"
   value = var.create_max ? module.vpc_max_management[0].vpc_id : null
 }
