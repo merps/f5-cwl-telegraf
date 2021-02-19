@@ -40,9 +40,9 @@ output "nat_public_ips" {
 # VPC
 output "vpc_id_max" {
   description = "The ID of the VPC"
-  value       = module.vpc_max[0].vpc_id
+  value       = var.create_max ? module.vpc_max[0].vpc_id : null
 }
-
+/*
 output "vpc_cidr_block_max" {
   description = "The CIDR block of the VPC"
   value       = concat(module.vpc_max[0].*.vpc_cidr_block,[""])[0]
@@ -74,3 +74,4 @@ output "nat_public_ips_max" {
   description = "List of public Elastic IPs created for AWS NAT Gateway"
   value       = module.vpc_max[0].nat_public_ips
 }
+*/
