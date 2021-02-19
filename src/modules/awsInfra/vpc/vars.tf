@@ -37,13 +37,10 @@ variable "aws_vpc" {
   })
 }
 
-variable "context" {
+variable "tags" {
   type = object({
     prefix  = string
-    azs     = list(string)
     env     = string
     random  = string
-    ec2_kp  = string
-    profile = string
   })
 }

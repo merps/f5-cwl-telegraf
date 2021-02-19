@@ -5,12 +5,12 @@
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name                 = format("%s-vpc-%s", var.context.prefix, var.context.random)
+  name                 = format("%s-vpc-%s", var.tags.prefix, var.tags.random)
   cidr                 = var.aws_vpc.cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  azs = var.aws_vpc.azs
+  # azs = var.aws_vpc.azs
 
   # vpc public subnet used for external interface
   public_subnets = [for num in range(length(var.aws_vpc.azs)) :
@@ -35,8 +35,8 @@ module "vpc" {
   create_database_internet_gateway_route = true
 
   tags = {
-    Name        = format("%s-vpc-%s", var.context.prefix, var.context.random)
+    Name        = format("%s-vpc-%s", var.tags.prefix, var.tags.random)
     Terraform   = "true"
-    Environment = var.context.env
+    Environment = var.tags.env
   }
 }
