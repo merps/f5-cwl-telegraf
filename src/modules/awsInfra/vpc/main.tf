@@ -10,7 +10,7 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  # azs = var.aws_vpc.azs
+  azs = var.aws_vpc.azs
 
   # vpc public subnet used for external interface
   public_subnets = [for num in range(length(var.aws_vpc.azs)) :
