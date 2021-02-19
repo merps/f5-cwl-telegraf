@@ -13,7 +13,7 @@ output "vpc_cidr_block" {
 # Subnets
 output "private_subnets" {
   description = "List of IDs of private subnets"
-  value       = module.vpc_min[0].private_subnets
+  value = var.create_min ? module.vpc_max[0].private_subnets : null || var.create_max ? module.vpc_min[0].private_subnets : null
 }
 
 output "public_subnets" {
