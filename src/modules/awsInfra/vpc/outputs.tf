@@ -35,3 +35,41 @@ output "nat_public_ips" {
   description = "List of public Elastic IPs created for AWS NAT Gateway"
   value       = module.vpc_min.nat_public_ips
 }
+
+# VPC
+output "vpc_id_max" {
+  description = "The ID of the VPC"
+  value       = module.vpc_max.vpc_id
+}
+
+output "vpc_cidr_block_max" {
+  description = "The CIDR block of the VPC"
+  value       = concat(module.vpc_max.*.vpc_cidr_block,[""])[0]
+}
+
+# Subnets
+output "private_subnets_max" {
+  description = "List of IDs of private subnets"
+  value       = module.vpc_max.private_subnets
+}
+
+output "public_subnets_max" {
+  description = "List of IDs of public subnets"
+  value       = module.vpc_max.public_subnets
+}
+
+output "database_subnets_max" {
+  description = "List of IDs of database subnets"
+  value       = module.vpc_max.database_subnets
+}
+
+output "intra_subnets_max" {
+  description = "List of IDs of intra subnets"
+  value       = module.vpc_max.intra_subnets
+}
+
+# NAT gateways
+output "nat_public_ips_max" {
+  description = "List of public Elastic IPs created for AWS NAT Gateway"
+  value       = module.vpc_max.nat_public_ips
+}

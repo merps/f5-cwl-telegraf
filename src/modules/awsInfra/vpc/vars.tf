@@ -32,4 +32,10 @@ variable "create_min" {
   default     = true
 }
 
+variable "create_max" {
+  description = "Controls if MIN VPC configuration should be created"
+  type        = bool
+  default     = true
+}
+
 

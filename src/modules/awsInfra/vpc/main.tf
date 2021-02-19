@@ -41,9 +41,9 @@ module "vpc_min" {
     Environment = var.tags.environment
   }
 }
-/*
+
 module "vpc_max" {
-  count = var.create_min ? 0 : 1
+  count = var.create_max ? 1 : 0
   source = "terraform-aws-modules/vpc/aws"
 
   name                 = format("%s-max-%s", var.tags.prefix, var.tags.random)
