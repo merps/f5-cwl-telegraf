@@ -29,13 +29,13 @@ variable "tags" {
 variable "create_min" {
   description = "Controls if MIN VPC configuration should be created"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "create_max" {
-  description = "Controls if MIN VPC configuration should be created"
+  description = "Controls if MAX VPC configuration should be created"
   type        = bool
-  default     = true
+  default     = false
 }
 
 
