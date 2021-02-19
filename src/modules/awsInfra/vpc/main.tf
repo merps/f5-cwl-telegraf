@@ -81,14 +81,6 @@ module "vpc_max_private" {
     cidrsubnet(var.aws_vpc_parameters.cidr, 8, num + var.internal_subnet_offset)
   ]
 
-  # using the database subnet method since it allows a public route
-  database_subnets = [
-    for num in range(length(var.aws_vpc_parameters.azs)) :
-    cidrsubnet(var.aws_vpc_parameters.cidr, 8, num + var.management_subnet_offset)
-  ]
-  create_database_subnet_group           = true
-  create_database_subnet_route_table     = true
-
   tags = {
     Name        = format("%s-max-private-%s", var.tags.prefix, var.tags.random)
     Terraform   = "true"
@@ -106,7 +98,9 @@ module "vpc_max_management" {
   enable_dns_support   = true
 
   azs = var.aws_vpc_parameters.azs
-
+  public_subnets = [for num in range(length(var.aws_vpc_parameters.azs)) :
+    cidrsubnet(var.aws_vpc_parameters.cidr, 8, num + var.management_subnet_offset)
+  ]
   tags = {
     Name        = format("%s-max-mgmt-%s", var.tags.prefix, var.tags.random)
     Terraform   = "true"
