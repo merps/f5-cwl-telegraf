@@ -3,9 +3,9 @@
 # using directions from https://clouddocs.f5.com/cloud/public/v1/aws/AWS_multiNIC.html
 #
 module "vpc_min" {
-  count = var.create_min ? 1 : 0
-  source = "terraform-aws-modules/vpc/aws"
+  count = var.create_min ? 1 : 0 && var.create_max ? 0 : 1
 
+  source = "terraform-aws-modules/vpc/aws"
   name                 = format("%s-min-%s", var.tags.prefix, var.tags.random)
   cidr                 = var.aws_vpc_parameters.cidr
   enable_dns_hostnames = true
