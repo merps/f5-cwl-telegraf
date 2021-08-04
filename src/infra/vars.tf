@@ -1,10 +1,8 @@
-variable "aws" {
+variable "aws_vpc_parameters" {
   type = object({
     region  = string
     azs     = list(string)
     cidr    = string
-    ec2_kp  = string
-    profile = string
   })
 }
 variable "client" {

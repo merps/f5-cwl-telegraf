@@ -9,27 +9,8 @@ variable "external_subnet_offset" {
 variable "internal_subnet_offset" {
   default = 20
 }
-/*
-variable "env" {
-  description = "Project Environment"
-  type = string
-}
-variable "cidr" {
-  description = "Environmental VPC CIDR"
-  type = string
-}
-variable "prefix" {
-  description = "Environment Tagging Prefix"
-}
-variable "azs" {
-  description = "AWS Availabilty Zones"
-}
-variable "random" {
-  description = "Instance/Environment Tag Prefix"
-}
-*/
-# another test
-variable "aws_vpc" {
+
+variable "aws_vpc_parameters" {
   type = object({
     cidr    = string
     azs     = list(string)
@@ -37,13 +18,22 @@ variable "aws_vpc" {
   })
 }
 
-variable "context" {
+variable "tags" {
   type = object({
     prefix  = string
-    azs     = list(string)
-    env     = string
+    environment     = string
     random  = string
-    ec2_kp  = string
-    profile = string
   })
+}
+
+variable "create_min" {
+  description = "Controls if MIN VPC configuration should be created"
+  type        = bool
+  default     = true
+}
+
+variable "create_max" {
+  description = "Controls if MAX VPC configuration should be created"
+  type        = bool
+  default     = false
 }
