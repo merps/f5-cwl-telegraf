@@ -12,45 +12,45 @@ resource "random_id" "id" {
 locals {
   context = {
     prefix  = tostring("${var.client.project}-${var.client.environment}")
-    azs     = var.aws.azs
+    azs     = var.aws_vpc_parameters.azs
     env     = var.client.environment
     random  = tostring(random_id.id.id)
     ec2_kp  = var.aws.ec2_kp
-    profile = var.aws.profile
+    profile = var.aws_vpc_parameters.profile
   }
 }
 locals {
   aws_vpc = {
-    cidr   = var.aws.cidr
-    azs    = var.aws.azs
-    region = var.aws.region
+    cidr   = var.aws_vpc_parameters.cidr
+    azs    = var.aws_vpc_parameters.azs
+    region = var.aws_vpc_parameters.region
   }
 }
 
 # Create VPC as per requirements
 module "vpc" {
-  source = "../modules/awsInfra/vpc"
+  source  = "../modules/awsInfra/vpc"
   aws_vpc = local.aws_vpc
   context = local.context
 }
 
 # Create BIG-IP appliance as per requirements
 module "bigip" {
-  source = "../modules/secZone/bigip"
+  source  = "../modules/secZone/bigip"
   context = local.context
   vpc     = module.vpc
 }
 
 # Create Jump host as per requirements
 module "jumphost" {
-  source = "../modules/secZone/jumphost"
+  source  = "../modules/secZone/jumphost"
   context = local.context
   vpc     = module.vpc
 }
 
 # Create WebApps Tier (Private Subnets) docker host
 module "web_tier" {
-  source = "../modules/appStack/docker"
+  source  = "../modules/appStack/docker"
   context = local.context
   tier    = module.vpc.private_subnets
   vpc     = module.vpc
@@ -58,8 +58,8 @@ module "web_tier" {
 
 # Create MGMT Tier (Public Subnets) docker host
 module "mgmt_tier" {
-  source = "../modules/appStack/docker"
+  source  = "../modules/appStack/docker"
   context = local.context
-  tier    = module.vpc.database_subnets
+  tier    = module.vpc.management_subnets
   vpc     = module.vpc
 }
