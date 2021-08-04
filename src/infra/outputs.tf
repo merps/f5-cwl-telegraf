@@ -4,7 +4,7 @@ output "aws_infra" {
   value = {
     vpc_id          = module.vpc.vpc_id,
     vpc_cidr_block  = module.vpc.vpc_cidr_block,
-    mgmt_subnets    = module.vpc.database_subnets,
+    mgmt_subnets    = module.vpc.management_subnets,
     public_subnets  = module.vpc.private_subnets,
     private_subnets = module.vpc.private_subnets
   }
@@ -24,6 +24,9 @@ output "aws_build" {
 output "f5" {
   # description = "BIG-IP instance information"
   value = module.bigip
+  # added for v0.14 of TF
+  # https://www.terraform.io/upgrade-guides/0-14.html#sensitive-values-in-plan-output 
+  sensitive = true
 }
 output "jumphost" {
   value = module.jumphost

@@ -136,6 +136,10 @@ fabric.properties
 *.tfstate
 *.tfstate.*
 
+# terraform local lock files
+.terraform.lock.hcl
+.terraform.lock.*
+
 # Crash log files
 crash.log
 
